@@ -7,7 +7,8 @@ body {
    font-family: "Pathway Gothic One", sans-serif;
    transition: background-color 0.3s ease-in-out;
 }
-body[data-theme="light"],body[data-theme="light"] #navbar {
+body[data-theme="light"],
+body[data-theme="light"] #navbar {
    background-color: #f0e4d7;
    color: #000;
 }
@@ -16,17 +17,16 @@ body[data-theme="dark"] {
    background-color: #393e46;
    color: #fff;
 }
-body[data-theme="dark"] #navbar{
-  background-color: #222831;
-  color: white;
+body[data-theme="dark"] #navbar {
+   background-color: #222831;
+   color: white;
 }
-body[data-theme="dark"] #navbar .theme{
-  background-color: #393e46;
-  color: white;
+body[data-theme="dark"] #navbar .theme {
+   background-color: #393e46;
+   color: white;
 }
 #navbar {
    width: 100%;
-   /* padding: 1vw; */
    display: flex;
    align-items: center;
    justify-content: space-between;
@@ -47,4 +47,74 @@ body[data-theme="dark"] #navbar .theme{
    border-radius: 10px;
    border: none;
    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+   cursor: pointer;
+}
+#container {
+   height: 91vh;
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+#all-songs-section {
+   height: 100%;
+   width: 27%;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   justify-content: flex-start;
+   border: 1px solid black;
+   margin-top: 0.5vw;
+   margin-left: 0.5vw;
+   border-radius: 8px;
+}
+#all-songs-section .genre-div {
+   margin-top: 1vw;
+}
+#all-songs-section .genre-div label {
+   font-size: 1.2vw;
+   padding-left: 1vw;
+}
+#all-songs-section .genre-div #genre-filter {
+   font-size: 1vw;
+   margin-left: 1vw;
+   border-radius: 5px;
+}
+#all-songs-section h1 {
+   margin-left: 1vw;
+   font-size: 2vw;
+}
+#all-songs-section ul {
+   margin-left: -1vw;
+   list-style-type: none;
+}
+#all-songs-section ul li {
+  width: 100%;
+   font-size: 1.3vw;
+   margin-bottom: 0.2vw;
+   padding: 2px 5px;
+   border-radius: 0 8px 0 8px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+}
+#all-songs-section ul li:hover{
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+  background: linear-gradient(to right, #2c3e50, #3498db, #ecf0f1);
+  font-size: 1.4vw;
+}
+#player-section {
+   height: 100%;
+   width: 40%;
+   border: 1px solid black;
+   margin-top: 0.5vw;
+   border-radius: 8px;
+}
+#playlist-section {
+   height: 100%;
+   width: 27%;
+   border: 1px solid black;
+   margin-top: 0.5vw;
+   margin-right: 0.5vw;
+   border-radius: 8px;
 }

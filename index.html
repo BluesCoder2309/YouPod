@@ -10,12 +10,31 @@
       <link rel="stylesheet" href="style.css" />
    </head>
    <body>
-      <nav id='navbar'>
+      <nav id="navbar">
          <h1 class="logoText">YouPod</h1>
 
          <button class="theme">Theme</button>
       </nav>
-      
+      <div id="container">
+         <div id="all-songs-section">
+            <div class="genre-div">
+               <label for="genre-filter">Filter by Genre:</label>
+               <select name="genre" id="genre-filter">
+                  <option value="All">All</option>
+                  <option value="Blues">Blues</option>
+                  <option value="Rock">Rock</option>
+                  <option value="Jazz">Jazz</option>
+                  <option value="Hip-Hop">Hip-Hop</option>
+               </select>
+            </div>
+            <h1>All Songs</h1>
+            <ul id="song-list">
+               
+            </ul>
+         </div>
+         <div id="player-section"></div>
+         <div id="playlist-section"></div>
+      </div>
 
       <script src="script.js"></script>
    </body>
