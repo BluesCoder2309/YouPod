@@ -1,5 +1,3 @@
-// import { songs } from "./data";
-
 const songs = [
    {
       id: 1,
@@ -78,10 +76,30 @@ const songs = [
 
 const body = document.body;
 const themeBtn = document.querySelector(".theme");
+
 const genreFilter = document.querySelector("#genre-filter");
 const songList = document.querySelector("#song-list");
-// console.log(genreFilter[0].value);
-let currentSongIndex = 0;
+
+const nowPlaying = document.querySelector(".now-playing");
+const songImg = document.querySelector(".song-img");
+const songName = document.querySelector(".song-name");
+const artistName = document.querySelector(".artist-name");
+
+const playPauseBtn = document.querySelector(".playPause-track");
+const prevBtn = document.querySelector(".prev-track");
+const nextBtn = document.querySelector(".next-track");
+const shuffleBtn = document.querySelector(".fa-random");
+const song = document.querySelector("audio");
+
+const seekSlider = document.querySelector(".seek-slider");
+const volumeSlider = document.querySelector(".volume-slider");
+
+const currentTime = document.querySelector(".current-time");
+const totalTime = document.querySelector(".total-time");
+
+let songIndex = 0;
+let isPlaying = false;
+let updateTimer;
 
 body.setAttribute("data-theme", "light");
 
@@ -91,20 +109,163 @@ themeBtn.addEventListener("click", () => {
    body.setAttribute("data-theme", newTheme);
 });
 
+//===========================================================> Render Songs
 function showSongs(genre = "All") {
    songList.innerHTML = "";
    const filteredSongs = genre === "All" ? songs : songs.filter((s) => s.genre === genre);
 
    filteredSongs.forEach((s) => {
-      const song = document.createElement("li");
-      song.textContent = s.name;
-      songList.appendChild(song);
+      const songItem = document.createElement("li");
+      songItem.textContent = s.name;
+      songItem.dataset.id = s.id;
+
+      if (songs[songIndex].id === s.id) {
+         songItem.classList.add("playing");
+      }
+
+      songItem.addEventListener("click", () => {
+         songIndex = songs.findIndex((song) => song.id === s.id);
+         renderSong(songIndex);
+      });
+      songList.appendChild(songItem);
    });
 }
-showSongs();
+//===========================================================> Filter Songs based on Genre
+function filterSongs() {
+   const selectedGenre = this.value;
+   const filteredSongs = selectedGenre === "All" ? songs : songs.filter((s) => s.genre === selectedGenre);
 
-genreFilter.addEventListener("change", (e) => {
-   const selectedGenre = e.target.value;
    showSongs(selectedGenre);
-});
-function filterSongs() {}
+   // Check if current song is in filtered list
+   const currentSongVisible = filteredSongs.some((s) => s.id === songs[songIndex].id);
+
+   // If not, switch to first song in that genre
+   if (!currentSongVisible && filteredSongs.length > 0) {
+      const firstSongId = filteredSongs[0].id;
+      songIndex = songs.findIndex((s) => s.id === firstSongId);
+      renderSong(songIndex);
+   }
+}
+
+//============================================================> Render Songs
+function renderSong(index) {
+   clearInterval(updateTimer);
+   reset();
+   song.src = "";
+   const songToRender = songs[index];
+   song.src = songToRender.source;
+   songImg.style.backgroundImage = `url(${songToRender.image})`;
+   songName.textContent = songToRender.name;
+   artistName.textContent = songToRender.artist;
+   nowPlaying.textContent = `Playing music ${songToRender.id} of ${songs.length}`;
+   updateTimer = setInterval(setUpdate, 1000);
+
+   updatePlayingClass();
+
+   isPlaying = false;
+   playPause();
+}
+function reset() {
+   currentTime.textContent = "00:00";
+   totalTime.textContent = "00:00";
+   seekSlider.value = 0;
+}
+function seekTo() {
+   let seekTo = song.duration * (seekSlider.value / 100);
+   song.currentTime = seekTo;
+   playSong();
+}
+function shuffle() {
+   const randomIndex = Math.floor(Math.random() * songs.length);
+   songIndex = randomIndex;
+   renderSong(songIndex);
+}
+function setVolume() {
+   song.volume = volumeSlider.value / 100;
+}
+
+function playPause() {
+   isPlaying ? pauseSong() : playSong();
+}
+
+function pauseSong() {
+   song.pause();
+   isPlaying = false;
+   songImg.classList.remove("rotate");
+   playPauseBtn.innerHTML = '<i class="fa fa-play-circle fa-4x"></i>';
+}
+function playSong() {
+   song.play();
+   isPlaying = true;
+   songImg.classList.add("rotate");
+   playPauseBtn.innerHTML = '<i class="fa fa-pause-circle fa-4x"></i>';
+}
+
+//To highlight the current playing song
+function updatePlayingClass() {
+   const allItems = document.querySelectorAll("#song-list li");
+   allItems.forEach((li) => {
+      const liId = parseInt(li.dataset.id);
+      if (liId === songs[songIndex].id) {
+         li.classList.add("playing");
+      } else {
+         li.classList.remove("playing");
+      }
+   });
+}
+
+//--------------------------------------------------------------------------------> Prev and Next functionality
+function prevSong() {
+   songIndex--;
+   if (songIndex < 0) {
+      songIndex = songs.length - 1;
+   }
+   renderSong(songIndex);
+}
+function nextSong() {
+   songIndex++;
+   if (songIndex >= songs.length) {
+      songIndex = 0;
+   }
+   renderSong(songIndex);
+}
+
+function setUpdate() {
+   let seekPosition = 0;
+   if (!isNaN(song.duration)) {
+      seekPosition = song.currentTime * (100 / song.duration);
+      seekSlider.value = seekPosition;
+
+      let currentMinutes = Math.floor(song.currentTime / 60);
+      let currentSeconds = Math.floor(song.currentTime - currentMinutes * 60);
+
+      let durationMinutes = Math.floor(song.duration / 60);
+      let durationSeconds = Math.floor(song.duration - durationMinutes * 60);
+
+      if (currentSeconds < 10) {
+         currentSeconds = 0 + currentSeconds;
+      }
+      if (durationSeconds < 10) {
+         durationSeconds = 0 + durationSeconds;
+      }
+      if (currentMinutes < 10) {
+         currentMinutes = 0 + currentMinutes;
+      }
+      if (durationMinutes < 10) {
+         durationMinutes = 0 + durationMinutes;
+      }
+
+      currentTime.textContent = currentMinutes + ":" + currentSeconds;
+      totalTime.textContent = durationMinutes + ":" + durationSeconds;
+   }
+}
+
+genreFilter.addEventListener("change", filterSongs);
+prevBtn.addEventListener("click", prevSong);
+nextBtn.addEventListener("click", nextSong);
+seekSlider.addEventListener("input", seekTo);
+volumeSlider.addEventListener("input", setVolume);
+song.addEventListener("ended", nextSong);
+
+showSongs();
+renderSong(songIndex);

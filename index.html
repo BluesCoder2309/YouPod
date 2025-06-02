@@ -7,6 +7,13 @@
       <style>
          @import url("https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&display=swap");
       </style>
+      <link
+         rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      />
       <link rel="stylesheet" href="style.css" />
    </head>
    <body>
@@ -28,12 +35,79 @@
                </select>
             </div>
             <h1>All Songs</h1>
-            <ul id="song-list">
-               
-            </ul>
+            <ul id="song-list"></ul>
          </div>
-         <div id="player-section"></div>
-         <div id="playlist-section"></div>
+         <div id="player-section">
+            <div class="wrapper">
+               <div class="details">
+                  <div class="now-playing">Playing x of y</div>
+                  <div class="song-img"></div>
+                  <div class="song-name">Track Name</div>
+                  <div class="artist-name">Artist Name</div>
+               </div>
+               <div class="audio">
+                  <audio src="" type="audio/mpeg"></audio>
+               </div>
+               <div class="slider-container">
+                  <div class="current-time">00:00</div>
+                  <input type="range" min="1" max="100" value="0" class="seek-slider" />
+                  <div class="total-time">00:00</div>
+               </div>
+               <div class="slider-container">
+                  <i class="fa fa-volume-down"></i>
+                  <input type="range" min="1" max="100" value="100" class="volume-slider" />
+                  <i class="fa fa-volume-up"></i>
+               </div>
+               <div class="buttons">
+                  <div class="shuffle" onclick="shuffle()">
+                     <i class="fas fa-random fa-2x" title="shuffle"></i>
+                  </div>
+                  <div class="prev-track" onclick="prevTrack()">
+                     <i class="fa fa-step-backward fa-2x"></i>
+                  </div>
+                  <div class="playPause-track" onclick="playPause()">
+                     <i class="fa fa-play-circle fa-4x"></i>
+                  </div>
+                  <div class="next-track" onclick="nextTrack()">
+                     <i class="fa fa-step-forward fa-2x"></i>
+                  </div>
+                  <div class="add-to-playlist" onclick="addToPlaylist()">
+                     <i class="fa-solid fa-plus fa-2x" title="Add to Playlist"></i>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="playlist-section">
+            <div class="playlist-section-contents">
+               <div class="input">
+                  <input type="text" id="playlist" placeholder='Enter Playlist Name'/>
+                  <button class='create-playlist-btn'>Create Playlist</button>
+               </div>
+               <div class="current-playlist-list">
+                  <h2>Current Playlist</h2>
+                  <ul class='current-list'>
+                        <li>orange</li>
+                        <li>orange</li>
+                        <li>orange</li>
+                        <li>orange</li>
+                        <li>orange</li>
+
+
+
+                  </ul>
+               </div>
+               <div class="all-playlist-list">
+                  <h2>Playlists</h2>
+                  <ul class='all-list'>
+                     <li>orange</li>
+                     <li>orange</li>
+                     <li>orange</li>
+                     <li>orange</li>
+                     <li>orange</li>
+                  </ul>
+               </div>
+            </div>
+         </div>
       </div>
 
       <script src="script.js"></script>
