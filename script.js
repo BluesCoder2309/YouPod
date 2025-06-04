@@ -89,6 +89,7 @@ const playPauseBtn = document.querySelector(".playPause-track");
 const prevBtn = document.querySelector(".prev-track");
 const nextBtn = document.querySelector(".next-track");
 const shuffleBtn = document.querySelector(".fa-random");
+const addToPlaylistBtn = document.querySelector(".add-to-playlist .fa-solid");
 const song = document.querySelector("audio");
 
 const seekSlider = document.querySelector(".seek-slider");
@@ -97,9 +98,16 @@ const volumeSlider = document.querySelector(".volume-slider");
 const currentTime = document.querySelector(".current-time");
 const totalTime = document.querySelector(".total-time");
 
+const playlistInput = document.querySelector("#playlist-input");
+const createPlaylistBtn = document.querySelector(".create-playlist-btn");
+const currentPlaylistSongContainer = document.querySelector(".current-list");
+const playlistContainer = document.querySelector(".all-list");
+
 let songIndex = 0;
 let isPlaying = false;
 let updateTimer;
+const playlist = [];
+let selectedPlaylistIndex = null;
 
 body.setAttribute("data-theme", "light");
 
@@ -135,7 +143,6 @@ function filterSongs() {
    const selectedGenre = this.value;
    const filteredSongs = selectedGenre === "All" ? songs : songs.filter((s) => s.genre === selectedGenre);
 
-   showSongs(selectedGenre);
    // Check if current song is in filtered list
    const currentSongVisible = filteredSongs.some((s) => s.id === songs[songIndex].id);
 
@@ -145,6 +152,7 @@ function filterSongs() {
       songIndex = songs.findIndex((s) => s.id === firstSongId);
       renderSong(songIndex);
    }
+   showSongs(selectedGenre);
 }
 
 //============================================================> Render Songs
@@ -260,12 +268,85 @@ function setUpdate() {
    }
 }
 
+//-----------------------------------------------------------------------------> Create Playlist
+function createPlaylist() {
+   const name = playlistInput.value.trim();
+   if (name === "") return alert("Please enter a Playlist name!");
+
+   //check if the playlist name already exists
+   const exist = playlist.some((p) => p.name === name);
+   if (exist) return alert("Different Playlist with the Same Name already Exists!");
+
+   playlist.push({ name, songs: [] });
+   playlistInput.value = "";
+
+   renderPlaylist();
+}
+//-------------------------------------------------------------------------------->Render Playlist
+function renderPlaylist() {
+   playlistContainer.innerHTML = "";
+
+   playlist.forEach((p, index) => {
+      const li = document.createElement("li");
+      li.textContent = p.name;
+
+      li.addEventListener("click", () => {
+         selectedPlaylistIndex = index;
+         renderPlaylistSongs(p.name);
+      });
+      playlistContainer.appendChild(li);
+   });
+}
+
+//-----------------------------------------------------------------------------> Add to playlist
+function addToPlaylist(songId, playlistIndex) {
+   const selectedPlaylist = playlist[playlistIndex];
+
+   if (!selectedPlaylist.songs.includes(songId)) {
+      selectedPlaylist.songs.push(songId);
+      alert("Added to Playlist");
+      renderPlaylistSongs(selectedPlaylist.name);
+   } else {
+      alert("Song already in Playlist!");
+   }
+}
+
+//------------------------------------------------------------------------------------->Render Playlist Songs
+function renderPlaylistSongs(name) {
+   const p = playlist.find((pl) => pl.name === name);
+   if (!p) return;
+
+   currentPlaylistSongContainer.innerHTML = "";
+   p.songs.forEach((songId) => {
+      const songObj = songs.find((s) => s.id === songId);
+      if (songObj) {
+         const li = document.createElement("li");
+         li.textContent = `${songObj.name} - ${songObj.artist}`;
+         li.addEventListener("click", () => {
+            songIndex = songs.findIndex((s) => s.id === songObj.id);
+            renderSong(songIndex);
+         });
+         currentPlaylistSongContainer.appendChild(li);
+      }
+   });
+}
+
 genreFilter.addEventListener("change", filterSongs);
 prevBtn.addEventListener("click", prevSong);
 nextBtn.addEventListener("click", nextSong);
 seekSlider.addEventListener("input", seekTo);
 volumeSlider.addEventListener("input", setVolume);
 song.addEventListener("ended", nextSong);
+createPlaylistBtn.addEventListener("click", createPlaylist);
+addToPlaylistBtn.addEventListener("click", () => {
+   if (selectedPlaylistIndex === null) {
+      alert("Please select a playlist first!");
+      return;
+   }
+   const songId = songs[songIndex].id;
+   addToPlaylist(songId, selectedPlaylistIndex);
+});
 
 showSongs();
+
 renderSong(songIndex);
